@@ -1,0 +1,3 @@
+provides: leveldb
+requires: libc libl4re-vfs libstdc++ libl4revfs-fs-tmpfs
+Maintainer: sartakov

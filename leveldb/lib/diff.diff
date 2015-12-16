@@ -1,0 +1,184 @@
+Only in /home/k/work/leveldb/leveldb-master/: build_config.mk
+Only in /home/k/work/leveldb/leveldb-master/db: builder.o
+Only in /home/k/work/leveldb/leveldb-master/db: c.o
+diff -uar ./db/c_test.c /home/k/work/leveldb/leveldb-master/db/c_test.c
+--- ./db/c_test.c	2015-01-14 21:03:51.185345529 +0300
++++ /home/k/work/leveldb/leveldb-master/db/c_test.c	2014-12-11 19:08:57.000000000 +0300
+@@ -165,17 +165,13 @@
+   char* err = NULL;
+   int run = -1;
+ 
+-    printf("mount / %d \n", mount("none", "tmp", "tmpfs", 0, 0));
+-    printf("mount done\n");
+-
+-
+   CheckCondition(leveldb_major_version() >= 1);
+   CheckCondition(leveldb_minor_version() >= 1);
+ 
+   snprintf(dbname, sizeof(dbname),
+            "%s/leveldb_c_test-%d",
+            GetTempDir(),
+-           ((int) 5));
++           ((int) geteuid()));
+ 
+   StartPhase("create_objects");
+   cmp = leveldb_comparator_create(NULL, CmpDestroy, CmpCompare, CmpName);
+diff -uar ./db/db_bench.cc /home/k/work/leveldb/leveldb-master/db/db_bench.cc
+--- ./db/db_bench.cc	2015-01-14 21:20:23.438601381 +0300
++++ /home/k/work/leveldb/leveldb-master/db/db_bench.cc	2015-01-14 21:16:28.617015383 +0300
+@@ -17,7 +17,6 @@
+ #include "util/mutexlock.h"
+ #include "util/random.h"
+ #include "util/testutil.h"
+-#include <sys/mount.h>
+ 
+ // Comma-separated list of operations to run in the specified order
+ //   Actual benchmarks:
+@@ -937,10 +936,6 @@
+ }  // namespace leveldb
+ 
+ int main(int argc, char** argv) {
+-
+-    printf("mount / %d \n", mount("none", "tmp", "tmpfs", 0, 0));
+-    printf("mount done\n");
+-
+   FLAGS_write_buffer_size = leveldb::Options().write_buffer_size;
+   FLAGS_open_files = leveldb::Options().max_open_files;
+   std::string default_db_path;
+@@ -983,9 +978,8 @@
+     }
+   }
+ 
+-    FLAGS_write_buffer_size=0xfffffff;
+-    FLAGS_num=0;
+-    
++FLAGS_write_buffer_size=0xfffffff;
++
+   // Choose a location for the test database if none given with --db=<path>
+   if (FLAGS_db == NULL) {
+       leveldb::Env::Default()->GetTestDirectory(&default_db_path);
+Only in /home/k/work/leveldb/leveldb-master/db: db_bench.o
+Only in /home/k/work/leveldb/leveldb-master/db: dbformat.o
+Only in /home/k/work/leveldb/leveldb-master/db: db_impl.o
+Only in /home/k/work/leveldb/leveldb-master/db: db_iter.o
+diff -uar ./db/db_test.cc /home/k/work/leveldb/leveldb-master/db/db_test.cc
+--- ./db/db_test.cc	2015-01-14 21:07:11.227965541 +0300
++++ /home/k/work/leveldb/leveldb-master/db/db_test.cc	2014-12-11 19:08:57.000000000 +0300
+@@ -16,7 +16,6 @@
+ #include "util/mutexlock.h"
+ #include "util/testharness.h"
+ #include "util/testutil.h"
+-#include <sys/mount.h>
+ 
+ namespace leveldb {
+ 
+@@ -2117,9 +2116,6 @@
+ }  // namespace leveldb
+ 
+ int main(int argc, char** argv) {
+-    printf("mount / %d \n", mount("none", "tmp", "tmpfs", 0, 0));
+-    printf("mount done\n");
+-
+   if (argc > 1 && std::string(argv[1]) == "--benchmark") {
+     leveldb::BM_LogAndApply(1000, 1);
+     leveldb::BM_LogAndApply(1000, 100);
+Only in /home/k/work/leveldb/leveldb-master/db: dumpfile.o
+Only in /home/k/work/leveldb/leveldb-master/db: filename.o
+Only in /home/k/work/leveldb/leveldb-master/db: log_reader.o
+diff -uar ./db/log_test.cc /home/k/work/leveldb/leveldb-master/db/log_test.cc
+--- ./db/log_test.cc	2015-01-14 21:08:40.663798166 +0300
++++ /home/k/work/leveldb/leveldb-master/db/log_test.cc	2014-12-11 19:08:57.000000000 +0300
+@@ -525,11 +525,6 @@
+ }  // namespace log
+ }  // namespace leveldb
+ 
+-#include <sys/mount.h>
+-
+ int main(int argc, char** argv) {
+-    printf("mount / %d \n", mount("none", "tmp", "tmpfs", 0, 0));
+-    printf("mount done\n");
+-
+   return leveldb::test::RunAllTests();
+ }
+Only in /home/k/work/leveldb/leveldb-master/db: log_writer.o
+Only in /home/k/work/leveldb/leveldb-master/db: memtable.o
+Only in /home/k/work/leveldb/leveldb-master/db: repair.o
+Only in /home/k/work/leveldb/leveldb-master/db: table_cache.o
+Only in /home/k/work/leveldb/leveldb-master/db: version_edit.o
+Only in /home/k/work/leveldb/leveldb-master/db: version_set.o
+Only in /home/k/work/leveldb/leveldb-master/db: write_batch.o
+Only in /home/k/work/leveldb/leveldb-master/: db_bench
+Only in /home/k/work/leveldb/leveldb-master/: libleveldb.a
+Only in /home/k/work/leveldb/leveldb-master/: libleveldb.so
+Only in /home/k/work/leveldb/leveldb-master/: libleveldb.so.1
+Only in /home/k/work/leveldb/leveldb-master/: libleveldb.so.1.18
+diff -uar ./port/port.h /home/k/work/leveldb/leveldb-master/port/port.h
+--- ./port/port.h	2015-01-13 23:09:46.543588296 +0300
++++ /home/k/work/leveldb/leveldb-master/port/port.h	2014-12-11 19:08:57.000000000 +0300
+@@ -10,7 +10,6 @@
+ // Include the appropriate platform specific file below.  If you are
+ // porting to a new platform, see "port_example.h" for documentation
+ // of what the new port_<platform>.h file must provide.
+-
+ #if defined(LEVELDB_PLATFORM_POSIX)
+ #  include "port/port_posix.h"
+ #elif defined(LEVELDB_PLATFORM_CHROMIUM)
+Only in /home/k/work/leveldb/leveldb-master/port: port_posix.o
+Only in /home/k/work/leveldb/leveldb-master/table: block_builder.o
+Only in /home/k/work/leveldb/leveldb-master/table: block.o
+Only in /home/k/work/leveldb/leveldb-master/table: filter_block.o
+Only in /home/k/work/leveldb/leveldb-master/table: format.o
+Only in /home/k/work/leveldb/leveldb-master/table: iterator.o
+Only in /home/k/work/leveldb/leveldb-master/table: merger.o
+Only in /home/k/work/leveldb/leveldb-master/table: table_builder.o
+Only in /home/k/work/leveldb/leveldb-master/table: table.o
+Only in /home/k/work/leveldb/leveldb-master/table: two_level_iterator.o
+Only in /home/k/work/leveldb/leveldb-master/util: arena.o
+Only in /home/k/work/leveldb/leveldb-master/util: bloom.o
+Only in /home/k/work/leveldb/leveldb-master/util: cache.o
+Only in /home/k/work/leveldb/leveldb-master/util: coding.o
+Only in /home/k/work/leveldb/leveldb-master/util: comparator.o
+Only in /home/k/work/leveldb/leveldb-master/util: crc32c.o
+Only in /home/k/work/leveldb/leveldb-master/util: env.o
+diff -uar ./util/env_posix.cc /home/k/work/leveldb/leveldb-master/util/env_posix.cc
+--- ./util/env_posix.cc	2015-01-14 00:10:46.830495278 +0300
++++ /home/k/work/leveldb/leveldb-master/util/env_posix.cc	2015-01-14 00:39:26.456090096 +0300
+@@ -79,12 +79,7 @@
+   virtual Status Read(uint64_t offset, size_t n, Slice* result,
+                       char* scratch) const {
+     Status s;
+-#if 0
+     ssize_t r = pread(fd_, scratch, n, static_cast<off_t>(offset));
+-#else
+-    lseek(fd_,static_cast<off_t>(offset),SEEK_SET);
+-    ssize_t r = read(fd_,scratch,n);
+-#endif
+     *result = Slice(scratch, (r < 0) ? 0 : r);
+     if (r < 0) {
+       // An error: return a non-ok status
+@@ -412,8 +407,6 @@
+ 
+   virtual Status RenameFile(const std::string& src, const std::string& target) {
+     Status result;
+-    WritableFile **file;
+-    NewWritableFile(target, file);
+     if (rename(src.c_str(), target.c_str()) != 0) {
+       result = IOError(src, errno);
+     }
+@@ -464,7 +457,7 @@
+       *result = env;
+     } else {
+       char buf[100];
+-      snprintf(buf, sizeof(buf), "/tmp/leveldbtest-%d", int(5));
++      snprintf(buf, sizeof(buf), "/tmp/leveldbtest-%d", int(geteuid()));
+       *result = buf;
+     }
+     // Directory may already exist
+Only in /home/k/work/leveldb/leveldb-master/util: env_posix.o
+Only in /home/k/work/leveldb/leveldb-master/util: filter_policy.o
+Only in /home/k/work/leveldb/leveldb-master/util: hash.o
+Only in /home/k/work/leveldb/leveldb-master/util: histogram.o
+Only in /home/k/work/leveldb/leveldb-master/util: logging.o
+Only in /home/k/work/leveldb/leveldb-master/util: options.o
+Only in /home/k/work/leveldb/leveldb-master/util: status.o
+Only in /home/k/work/leveldb/leveldb-master/util: testutil.o
